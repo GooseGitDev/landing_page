@@ -1,14 +1,13 @@
+// ==========================================
+// 1. INITIALIZE SUPABASE via ES Modules
+// ==========================================
+// This imports the library cleanly without polluting global window names
+import { createClient } from 'https://jsdelivr.net';
 
-// ==========================================
-// 1. INITIALIZE SUPABASE
-// ==========================================
 const SUPABASE_URL = "https://oztxnrrhbrgzzibfolmc.supabase.co"; 
 const SUPABASE_KEY = "sb_publishable_umgeh3s19yYT7neVpzxoKw_JQ665XFh"; 
 
-// The CDN automatically provides the global 'supabase' object.
-// We call its createClient function directly and assign it to our custom name.
-const mySupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+const mySupabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ==========================================
 // 2. DOM ELEMENTS (UI SELECTORS)
