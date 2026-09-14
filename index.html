@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Hub</title>
     <link rel="stylesheet" href="./static/style.css">
-    <!-- Notice: We removed the old script tag from here entirely! -->
+    <!-- This securely loads the global Supabase library into your browser layout -->
+    <script src="https://jsdelivr.net"></script>
 </head>
 <body>
 
@@ -47,7 +48,7 @@
         <button id="btn-logout">Log Out</button>
     </div>
 
-    <!-- CORRECTED: type="module" allows clean, direct imports inside app.js -->
-    <script type="module" src="./static/app.js"></script>
+    <!-- Standard script source loader -->
+    <script src="./static/app.js"></script>
 </body>
 </html>
