@@ -146,4 +146,5 @@
 
     // Begin check
     initializeHub();
+    
 })();
