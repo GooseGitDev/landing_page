@@ -4,9 +4,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 1. INITIALIZE SUPABASE
     // ==========================================
-    const SUPABASE_URL = "https://supabase.co"; 
+    const SUPABASE_URL = "https://oztxnrrhbrgzzibfolmc.supabase.co"; 
     const SUPABASE_KEY = "sb_publishable_umgeh3s19yYT7neVpzxoKw_JQ665XFh"; 
-    const mySupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Access the global variable exposed directly by the browser layout bundle
+    const mySupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     // ==========================================
     // 2. DOM ELEMENTS (UI SELECTORS)
