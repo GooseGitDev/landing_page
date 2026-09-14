@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Hub</title>
     <link rel="stylesheet" href="./static/style.css">
-    <!-- This securely loads the global Supabase library into your browser layout -->
-    <script src="https://jsdelivr.net"></script>
+    
+    <!-- FIX: This loads the unpkg bundle which explicitly exposes 'supabase' globally -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -48,7 +49,6 @@
         <button id="btn-logout">Log Out</button>
     </div>
 
-    <!-- Standard script source loader -->
     <script src="./static/app.js"></script>
 </body>
 </html>

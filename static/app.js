@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const SUPABASE_URL = "https://oztxnrrhbrgzzibfolmc.supabase.co"; 
     const SUPABASE_KEY = "sb_publishable_umgeh3s19yYT7neVpzxoKw_JQ665XFh"; 
 
-    // Directly utilize the globally accessible supabase object loaded from the HTML header
-    const mySupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Pull the client directly from the global browser window bundle
+    const mySupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     // ==========================================
     // 2. DOM ELEMENTS (UI SELECTORS)
