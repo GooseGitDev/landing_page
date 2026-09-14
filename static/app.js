@@ -5,8 +5,8 @@
 const SUPABASE_URL = "https://oztxnrrhbrgzzibfolmc.supabase.co"; 
 const SUPABASE_KEY = "sb_publishable_umgeh3s19yYT7neVpzxoKw_JQ665XFh"; 
 
-// The CDN exposes a global 'supabase' object directly. 
-// We use its built-in createClient method to initialize our client.
+// The CDN automatically provides the global 'supabase' object.
+// We call its createClient function directly and assign it to our custom name.
 const mySupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
