@@ -1,16 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>My New Website</title>
-	<link rel="stylesheet" href="./static/style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Hub</title>
+    <link rel="stylesheet" href="./static/style.css">
+    <!-- Include the Supabase JS Library -->
+    <script src="https://jsdelivr.net"></script>
 </head>
-
 <body>
 
-<h1>Hello World</h1>
+    <h1>Welcome to My Apps</h1>
 
-<p>My FastAPI site is running.</p>
+    <!-- 1. AUTHENTICATION SECTION -->
+    <div id="auth-container">
+        <!-- Login Form -->
+        <div id="login-form">
+            <h3>Login</h3>
+            <input type="email" id="login-email" placeholder="Email" required><br><br>
+            <input type="password" id="login-password" placeholder="Password" required><br><br>
+            <button id="btn-login">Log In</button>
+            <p>Don't have an account? <a href="#" id="link-show-signup">Sign up here</a></p>
+        </div>
 
+        <!-- Signup Form (Hidden by default via inline style) -->
+        <div id="signup-form" style="display: none;">
+            <h3>Create Account</h3>
+            <input type="email" id="signup-email" placeholder="Email" required><br><br>
+            <input type="password" id="signup-password" placeholder="Password" required><br><br>
+            <button id="btn-signup">Sign Up</button>
+            <p>Already have an account? <a href="#" id="link-show-login">Log in here</a></p>
+        </div>
+    </div>
+
+    <!-- 2. PROTECTED CONTENT SECTION (Hidden until logged in) -->
+    <div id="dashboard-container" style="display: none;">
+        <h3>Your Dashboard</h3>
+        <p>Logged in as: <span id="user-display-email"></span></p>
+        
+        <nav>
+            <ul>
+                <!-- Replace this URL with your actual map_rasterizer Render URL later -->
+                <li><a href="https://onrender.com" id="link-map-project">Go to Map Rasterizer</a></li>
+            </ul>
+        </nav>
+
+        <br>
+        <button id="btn-logout">Log Out</button>
+    </div>
+
+    <!-- Include our custom JavaScript logic -->
+    <script src="./static/app.js"></script>
 </body>
 </html>
