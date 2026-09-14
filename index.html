@@ -3,50 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Hub</title>
+    <title>My Hub Studio</title>
     <link rel="stylesheet" href="./static/style.css">
-    
-    <!-- FIX: This loads the unpkg bundle which explicitly exposes 'supabase' globally -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <!-- Secure global Supabase browser bundle -->
+    <script src="https://unpkg.com"></script>
 </head>
 <body>
 
-    <h1>Welcome to My Apps</h1>
+    <div class="app-container">
+        <h1>Welcome to My Apps</h1>
 
-    <!-- 1. AUTHENTICATION SECTION -->
-    <div id="auth-container">
-        <!-- Login Form -->
-        <div id="login-form">
-            <h3>Login</h3>
-            <input type="email" id="login-email" placeholder="Email" required><br><br>
-            <input type="password" id="login-password" placeholder="Password" required><br><br>
-            <button id="btn-login">Log In</button>
-            <p>Don't have an account? <a href="#" id="link-show-signup">Sign up here</a></p>
+        <!-- ERROR/SUCCESS MESSAGE CONTAINER -->
+        <div id="alert-banner" class="alert-banner" style="display: none;"></div>
+
+        <!-- 1. AUTHENTICATION SECTION -->
+        <div id="auth-container" class="card">
+            
+            <!-- Login Form -->
+            <div id="login-form">
+                <h3>Login to Your Account</h3>
+                <div class="input-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" placeholder="you@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required>
+                </div>
+                <button id="btn-login" class="btn-primary">Log In</button>
+                <p class="toggle-text">Don't have an account? <a href="#" id="link-show-signup">Sign up here</a></p>
+            </div>
+
+            <!-- Signup Form (Hidden by default) -->
+            <div id="signup-form" style="display: none;">
+                <h3>Create Free Account</h3>
+                <div class="input-group">
+                    <label for="signup-username">Username</label>
+                    <input type="text" id="signup-username" placeholder="Choose a username" required>
+                </div>
+                <div class="input-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" placeholder="you@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="signup-password">Password (min 6 characters)</label>
+                    <input type="password" id="signup-password" placeholder="••••••••" required>
+                </div>
+                <div class="input-group">
+                    <label for="signup-confirm-password">Confirm Password</label>
+                    <input type="password" id="signup-confirm-password" placeholder="••••••••" required>
+                </div>
+                <button id="btn-signup" class="btn-primary">Sign Up</button>
+                <p class="toggle-text">Already have an account? <a href="#" id="link-show-login">Log in here</a></p>
+            </div>
         </div>
 
-        <!-- Signup Form (Hidden by default) -->
-        <div id="signup-form" style="display: none;">
-            <h3>Create Account</h3>
-            <input type="email" id="signup-email" placeholder="Email" required><br><br>
-            <input type="password" id="signup-password" placeholder="Password" required><br><br>
-            <button id="btn-signup">Sign Up</button>
-            <p>Already have an account? <a href="#" id="link-show-login">Log in here</a></p>
+        <!-- 2. PROTECTED CONTENT SECTION (Hidden until logged in) -->
+        <div id="dashboard-container" class="card" style="display: none;">
+            <h3>Your App Dashboard</h3>
+            <p class="welcome-banner">Welcome back, <strong id="user-display-name">User</strong>!</p>
+            <p class="account-meta">Account Email: <span id="user-display-email"></span></p>
+            
+            <nav class="project-navigation">
+                <h4>Your Microservices</h4>
+                <ul>
+                    <!-- Note: We are dynamically altering this link via JS to append the secure JWT pass -->
+                    <li>
+                        <a href="https://map-rasterizer.onrender.com/" id="link-map-project" class="project-link">
+                            🚀 Launch Map Rasterizer
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <button id="btn-logout" class="btn-danger">Sign Out Securely</button>
         </div>
-    </div>
-
-    <!-- 2. PROTECTED CONTENT SECTION (Hidden until logged in) -->
-    <div id="dashboard-container" style="display: none;">
-        <h3>Your Dashboard</h3>
-        <p>Logged in as: <span id="user-display-email"></span></p>
-        
-        <nav>
-            <ul>
-                <li><a href="https://onrender.com" id="link-map-project">Go to Map Rasterizer</a></li>
-            </ul>
-        </nav>
-
-        <br>
-        <button id="btn-logout">Log Out</button>
     </div>
 
     <script src="./static/app.js"></script>
