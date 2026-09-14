@@ -1,11 +1,14 @@
+
 // ==========================================
 // 1. INITIALIZE SUPABASE
 // ==========================================
-// Use Supabase's global window variable to create our client under a unique name
-const SUPABASE_URL = "https://oztxnrrhbrgzzibfolmc.supabase.co/rest/v1/"; 
+const SUPABASE_URL = "https://oztxnrrhbrgzzibfolmc.supabase.co"; 
 const SUPABASE_KEY = "sb_publishable_umgeh3s19yYT7neVpzxoKw_JQ665XFh"; 
 
-const mySupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// The CDN exposes a global 'supabase' object directly. 
+// We use its built-in createClient method to initialize our client.
+const mySupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 
 // ==========================================
 // 2. DOM ELEMENTS (UI SELECTORS)
