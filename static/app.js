@@ -9,18 +9,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let mySupabaseClient;
 
-    // Fail-safe initialization cross-check
-    if (typeof supabase !== 'undefined') {
-        mySupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    } else if (window.supabase && typeof window.supabase.createClient === 'function') {
-        mySupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // The jsDelivr CDN attaches the global variable with a capital 'S' (Supabase)
+    if (typeof Supabase !== 'undefined') {
+        mySupabaseClient = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    } else if (window.Supabase && typeof window.Supabase.createClient === 'function') {
+        mySupabaseClient = window.Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     } else {
-        console.error("Critical: Supabase library bundle not compiled by browser layout yet.");
+        console.error("Critical Failure: The global Supabase library window object is missing.");
         return;
     }
 
     console.log("Supabase initialization secure. Constructing elements...");
-
     // ==========================================
     // 2. DOM ELEMENTS (UI SELECTORS)
     // ==========================================
