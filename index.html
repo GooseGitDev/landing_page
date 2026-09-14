@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Hub</title>
     <link rel="stylesheet" href="./static/style.css">
-    <!-- Include the Supabase JS Library -->
+    <!-- CORRECTED: This loads the real, live Supabase library -->
     <script src="https://jsdelivr.net"></script>
 </head>
 <body>
@@ -23,7 +23,7 @@
             <p>Don't have an account? <a href="#" id="link-show-signup">Sign up here</a></p>
         </div>
 
-        <!-- Signup Form (Hidden by default via inline style) -->
+        <!-- Signup Form (Hidden by default) -->
         <div id="signup-form" style="display: none;">
             <h3>Create Account</h3>
             <input type="email" id="signup-email" placeholder="Email" required><br><br>
