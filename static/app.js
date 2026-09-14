@@ -1,14 +1,25 @@
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM fully parsed. Initializing authentication hub...");
+    console.log("DOM fully parsed. Checking library availability...");
 
     // ==========================================
-    // 1. INITIALIZE SUPABASE
+    // 1. INITIALIZE SUPABASE WITH SAFETY CHECK
     // ==========================================
     const SUPABASE_URL = "https://oztxnrrhbrgzzibfolmc.supabase.co"; 
     const SUPABASE_KEY = "sb_publishable_umgeh3s19yYT7neVpzxoKw_JQ665XFh"; 
 
-    // Access the global variable exposed directly by the browser layout bundle
-    const mySupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let mySupabaseClient;
+
+    // Fail-safe initialization cross-check
+    if (typeof supabase !== 'undefined') {
+        mySupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    } else if (window.supabase && typeof window.supabase.createClient === 'function') {
+        mySupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    } else {
+        console.error("Critical: Supabase library bundle not compiled by browser layout yet.");
+        return;
+    }
+
+    console.log("Supabase initialization secure. Constructing elements...");
 
     // ==========================================
     // 2. DOM ELEMENTS (UI SELECTORS)
@@ -26,18 +37,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const userDisplayEmail = document.getElementById('user-display-email');
     const mapProjectLink = document.getElementById('link-map-project');
 
-    // Base URL configuration for map project setup
     const MAP_PROJECT_BASE_URL = "https://onrender.com";
 
-    // ==========================================
-    // HELPER FUNCTIONS (System UI Notifications)
-    // ==========================================
+    // System banner alert helper
     function displayAlert(message, type = "error") {
         alertBanner.innerText = message;
         alertBanner.className = `alert-banner ${type}`;
         alertBanner.style.display = 'block';
         
-        // Auto-dismiss notification after 6 seconds
         setTimeout(() => {
             alertBanner.style.display = 'none';
         }, 6000);
@@ -61,17 +68,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ==========================================
-    // 4. AUTHENTICATION LOGIC (Live Actions)
+    // 4. AUTHENTICATION LOGIC
     // ==========================================
 
-    // --- SIGN UP ACTION WITH METADATA ---
+    // --- SIGN UP ---
     document.getElementById('btn-signup').addEventListener('click', async () => {
         const username = document.getElementById('signup-username').value.trim();
         const email = document.getElementById('signup-email').value.trim();
         const password = document.getElementById('signup-password').value;
         const confirmPassword = document.getElementById('signup-confirm-password').value;
 
-        // Frontend Client Side Validations
         if (!username || !email || !password || !confirmPassword) {
             return displayAlert("Please populate all fields.", "error");
         }
@@ -84,13 +90,12 @@ document.addEventListener("DOMContentLoaded", () => {
             return displayAlert("Passwords do not match. Please verify.", "error");
         }
 
-        // Register with Supabase passing custom structural metadata
         const { data, error } = await mySupabaseClient.auth.signUp({
             email: email,
             password: password,
             options: {
                 data: {
-                    display_username: username // Saved directly inside user_metadata
+                    display_username: username
                 }
             }
         });
@@ -99,7 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
             displayAlert("Registration Defect: " + error.message, "error");
         } else {
             displayAlert("Success! Check your inbox for a confirmation validation link.", "success");
-            // Clear inputs
             document.getElementById('signup-username').value = '';
             document.getElementById('signup-email').value = '';
             document.getElementById('signup-password').value = '';
@@ -107,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // --- LOG IN ACTION ---
+    // --- LOG IN ---
     document.getElementById('btn-login').addEventListener('click', async () => {
         const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
@@ -123,36 +127,28 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // --- LOG OUT ACTION ---
+    // --- LOG OUT ---
     document.getElementById('btn-logout').addEventListener('click', async () => {
         const { error } = await mySupabaseClient.auth.signOut();
         if (error) displayAlert("Signout Error: " + error.message, "error");
     });
 
     // ==========================================
-    // 5. SESSION TRACKING & SECURITY HANDSHAKE
+    // 5. SESSION HANDSHAKE ASSIGNMENT
     // ==========================================
     mySupabaseClient.auth.onAuthStateChange((event, session) => {
         if (session) {
-            // User session is active
             authContainer.style.display = 'none';
             dashboardContainer.style.display = 'block';
-            
-            // Extract attributes from session payloads safely
             userDisplayEmail.innerText = session.user.email;
             
-            // Look into user metadata for the customized username, fall back to email if missing
             const customUsername = session.user.user_metadata?.display_username || "Explorer";
             userDisplayName.innerText = customUsername;
             
-            // PREVENT CRITICAL SECURITY LOSS ACROSS DOMAINS
-            // Append the cryptographic JWT access token directly as an URL search token.
-            // When user clicks link, FastAPI catches it securely via standard parameter checking.
+            // Append JWT pass link securely
             mapProjectLink.href = `${MAP_PROJECT_BASE_URL}?access_token=${session.access_token}`;
-            
             console.log("Authentication handshake prepared for downstream apps.");
         } else {
-            // User session cleared
             authContainer.style.display = 'block';
             dashboardContainer.style.display = 'none';
             userDisplayEmail.innerText = '';
