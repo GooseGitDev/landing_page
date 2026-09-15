@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const userDisplayEmail = document.getElementById('user-display-email');
     const mapProjectLink = document.getElementById('link-map-project');
 
-    const MAP_PROJECT_BASE_URL = "https://onrender.com";
+    const MAP_PROJECT_BASE_URL = "https://map-rasterizer.onrender.com/";
 
     function displayAlert(message, type = "error") {
         alertBanner.innerText = message;
