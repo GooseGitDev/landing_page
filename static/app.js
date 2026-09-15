@@ -1,20 +1,22 @@
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM fully parsed. Initializing local authentication architecture...");
+    console.log("DOM fully parsed. Initializing modular authentication hub...");
 
-    const SUPABASE_URL = "https://oztxnrrhbrgzzibfolmc.supabase.co"; 
+    // ==========================================
+    // 1. SUPABASE CLIENT CONNECTION
+    // ==========================================
+    const SUPABASE_URL = "https://supabase.co"; 
     const SUPABASE_KEY = "sb_publishable_umgeh3s19yYT7neVpzxoKw_JQ665XFh"; 
 
-    // Look for the browser object using exact Case Sensitivity matching rules
     const targetLib = window.Supabase || window.supabase || (typeof Supabase !== 'undefined' ? Supabase : null);
-    
     if (!targetLib) {
         console.error("Critical Failure: Supabase global script package was not ready.");
         return;
     }
-
     const mySupabaseClient = targetLib.createClient(SUPABASE_URL, SUPABASE_KEY);
-    console.log("Supabase initialization verified. Constructing elements...");
 
+    // ==========================================
+    // 2. DOM ELEMENTS (UI SELECTORS)
+    // ==========================================
     const loginForm = document.getElementById('login-form');
     const signupForm = document.getElementById('signup-form');
     const authContainer = document.getElementById('auth-container');
@@ -26,10 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const userDisplayName = document.getElementById('user-display-name');
     const userDisplayEmail = document.getElementById('user-display-email');
-    const mapProjectLink = document.getElementById('link-map-project');
 
-    const MAP_PROJECT_BASE_URL = "https://map-rasterizer.onrender.com/";
+    // Current active security session tracking token
+    let currentAccessToken = null;
 
+    // System Alert Display Handler
     function displayAlert(message, type = "error") {
         alertBanner.innerText = message;
         alertBanner.className = `alert-banner ${type}`;
@@ -37,7 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => { alertBanner.style.display = 'none'; }, 6000);
     }
 
-    // Toggle forms
+    // ==========================================
+    // 3. UI LAYOUT FORM TOGGLING
+    // ==========================================
     showSignupLink.addEventListener('click', (e) => {
         e.preventDefault();
         alertBanner.style.display = 'none';
@@ -52,7 +57,11 @@ document.addEventListener("DOMContentLoaded", () => {
         loginForm.style.display = 'block';
     });
 
-    // Sign Up Button Event
+    // ==========================================
+    // 4. CORE AUTHENTICATION FLOW ACTIONS
+    // ==========================================
+
+    // --- USER REGISTRATION ---
     document.getElementById('btn-signup').addEventListener('click', async () => {
         const username = document.getElementById('signup-username').value.trim();
         const email = document.getElementById('signup-email').value.trim();
@@ -63,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return displayAlert("Please populate all fields.", "error");
         }
         if (password.length < 6) {
-            return displayAlert("Password must possess at least 6 characters.", "error");
+            return displayAlert("Password must be at least 6 characters long.", "error");
         }
         if (password !== confirmPassword) {
             return displayAlert("Passwords do not match. Please verify.", "error");
@@ -76,9 +85,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (error) {
-            displayAlert("Registration Defect: " + error.message, "error");
+            displayAlert("Registration Issue: " + error.message, "error");
         } else {
-            displayAlert("Success! Check your inbox for a confirmation validation link.", "success");
+            displayAlert("Success! Check your inbox for a verification link.", "success");
             document.getElementById('signup-username').value = '';
             document.getElementById('signup-email').value = '';
             document.getElementById('signup-password').value = '';
@@ -86,44 +95,75 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Log In Button Event
+    // --- USER LOGIN ---
     document.getElementById('btn-login').addEventListener('click', async () => {
         const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
 
         if (!email || !password) {
-            return displayAlert("Please enter both email and password credentials.", "error");
+            return displayAlert("Please enter both email and password.", "error");
         }
 
-        const { data, error } = await mySupabaseClient.auth.signInWithPassword({ email, password });
+        const { error } = await mySupabaseClient.auth.signInWithPassword({ email, password });
         if (error) displayAlert("Authentication Failed: " + error.message, "error");
     });
 
-    // Log Out Button Event
+    // --- USER LOGOUT ---
     document.getElementById('btn-logout').addEventListener('click', async () => {
         const { error } = await mySupabaseClient.auth.signOut();
-        if (error) displayAlert("Signout Error: " + error.message, "error");
+        if (error) displayAlert("Logout Issue: " + error.message, "error");
     });
 
-    // Session listener handling UI adjustments
-    mySupabaseClient.auth.onAuthStateChange((event, session) => {
-        if (session) {
-            authContainer.style.display = 'none';
-            dashboardContainer.style.display = 'block';
-            userDisplayEmail.innerText = session.user.email;
+    // ==========================================
+    // 5. GLOBAL AUTOMATED LINK INTERCEPTOR (The Magic)
+    // ==========================================
+    // Instead of mapping links manually, we watch the entire page layout for clicks.
+    document.addEventListener('click', (e) => {
+        // Find if the clicked element (or its parent element) is a marked secure link
+        const targetLink = e.target.closest('a[data-secure-link="true"]');
+        
+        if (targetLink) {
+            e.preventDefault(); // Stop the default navigation temporary
             
-            const customUsername = session.user.user_metadata?.display_username || "Explorer";
-            userDisplayName.innerText = customUsername;
+            if (!currentAccessToken) {
+                return displayAlert("Security error: No active token found. Please re-authenticate.", "error");
+            }
             
-            mapProjectLink.href = `${MAP_PROJECT_BASE_URL}?access_token=${session.access_token}`;
-        } else {
-            authContainer.style.display = 'block';
-            dashboardContainer.style.display = 'none';
-            userDisplayEmail.innerText = '';
-            userDisplayName.innerText = 'User';
-            mapProjectLink.href = MAP_PROJECT_BASE_URL;
+            // Extract the base URL out of the HTML attribute href
+            const baseHref = targetLink.getAttribute('href');
+            
+            // Safely append the active cryptographic JWT pass as a URL search parameter
+            window.location.href = `${baseHref}?access_token=${currentAccessToken}`;
         }
     });
 
-    console.log("Authentication hub fully active!");
+    // ==========================================
+    // 6. PERSISTENT STATE LISTENER
+    // ==========================================
+    mySupabaseClient.auth.onAuthStateChange((event, session) => {
+        if (session) {
+            // User is authenticated
+            authContainer.style.display = 'none';
+            dashboardContainer.style.display = 'block';
+            
+            userDisplayEmail.innerText = session.user.email;
+            userDisplayName.innerText = session.user.user_metadata?.display_username || "Developer";
+            
+            // Save the secure token globally so the link interceptor can use it
+            currentAccessToken = session.access_token;
+            console.log("Secure authentication session validated.");
+        } else {
+            // User is signed out
+            authContainer.style.display = 'block';
+            dashboardContainer.style.display = 'none';
+            
+            userDisplayEmail.innerText = '';
+            userDisplayName.innerText = 'User';
+            
+            currentAccessToken = null;
+            console.log("Session cleared.");
+        }
+    });
+
+    console.log("Authentication hub fully active and modularized!");
 });

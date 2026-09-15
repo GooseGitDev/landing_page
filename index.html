@@ -6,20 +6,19 @@
     <title>My Hub Studio</title>
     <link rel="stylesheet" href="./static/style.css">
     
-    <!-- This securely loads the global Supabase library into your browser layout -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Secure global Supabase script bundle -->
+    <script src="https://jsdelivr.net"></script>
 </head>
 <body>
 
     <div class="app-container">
         <h1>Welcome to My Apps</h1>
 
-        <!-- ERROR/SUCCESS MESSAGE CONTAINER -->
+        <!-- SYSTEM NOTIFICATION BANNER -->
         <div id="alert-banner" class="alert-banner" style="display: none;"></div>
 
-        <!-- 1. AUTHENTICATION SECTION -->
+        <!-- 1. AUTHENTICATION SECTION (Logged Out) -->
         <div id="auth-container" class="card">
-            
             <!-- Login Form -->
             <div id="login-form">
                 <h3>Login to Your Account</h3>
@@ -59,7 +58,7 @@
             </div>
         </div>
 
-        <!-- 2. PROTECTED CONTENT SECTION (Hidden until logged in) -->
+        <!-- 2. PROTECTED HUB DASHBOARD (Logged In) -->
         <div id="dashboard-container" class="card" style="display: none;">
             <h3>Your App Dashboard</h3>
             <p class="welcome-banner">Welcome back, <strong id="user-display-name">User</strong>!</p>
@@ -67,20 +66,24 @@
             
             <nav class="project-navigation">
                 <h4>Your Microservices</h4>
-                <ul>
+                <ul id="project-links-list">
+                    <!-- 
+                      PRO-TIP: To add a new webapp, just add a new list item here!
+                      Ensure it has 'data-secure-link="true"' so JavaScript intercepts it.
+                    -->
                     <li>
-                        <a href="https://map-rasterizer.onrender.com/" id="link-map-project" class="project-link">
+                        <a href="https://map-rasterizer.onrender.com/" data-secure-link="true" class="project-link">
                             🚀 Launch Map Rasterizer
                         </a>
                     </li>
                 </ul>
             </nav>
 
-            <button id="btn-logout" class="btn-danger">Sign Out</button>
+            <button id="btn-logout" class="btn-danger">Sign Out Securely</button>
         </div>
     </div>
 
-    <!-- The defer keyword instructs the browser to wait for the header script before running -->
+    <!-- Guarantees browser layout downloads before running logic -->
     <script defer src="./static/app.js"></script>
 </body>
 </html>
