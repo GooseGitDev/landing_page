@@ -77,7 +77,7 @@
         const SUPABASE_URL = "https://oztxnrrhbrgzzibfolmc.supabase.co/rest/v1/";
         const SUPABASE_ANON_KEY = "sb_publishable_umgeh3s19yYT7neVpzxoKw_JQ665XFh";
         
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let isSignUpMode = false;
 
         // UI Element Hook Registry
@@ -93,7 +93,7 @@
         const launchGameLink = document.getElementById('launch-game-link');
 
         // Monitor identity status mutations automatically
-        supabase.auth.onAuthStateChange((event, session) => {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
             if (session) {
                 // User is authenticated successfully!
                 headerEmail.innerText = session.user.email;
@@ -130,18 +130,18 @@
             const password = document.getElementById('auth-password').value;
 
             if (isSignUpMode) {
-                const { error } = await supabase.auth.signUp({ email, password });
+                const { error } = await supabaseClient.auth.signUp({ email, password });
                 if (error) alert("Registration Error: " + error.message);
                 else alert("Check your email mailbox inbox for a verification validation link!");
             } else {
-                const { error } = await supabase.auth.signInWithPassword({ email, password });
+                const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (error) alert("Authentication Denied: " + error.message);
             }
         });
 
         // Logout Event Logic
         logoutBtn.addEventListener('click', async () => {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
         });
     </script>
 </body>
