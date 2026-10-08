@@ -102,7 +102,7 @@
                 loggedInPanel.classList.remove('hidden');
                 
                 // Append the secure token state straight to the link destination query array
-                launchGameLink.href = `https://onrender.com{session.access_token}`;
+                launchGameLink.href = `https://map-rasterizer.onrender.com?token=${session.access_token}`;
             } else {
                 // User is completely logged out
                 headerEmail.innerText = "Guest Mode Active";
