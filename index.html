@@ -101,14 +101,14 @@
                 loggedOutPanel.classList.add('hidden');
                 loggedInPanel.classList.remove('hidden');
                 
-                // Dynamically route the user depending on if we are testing locally or live
+                // Track where the user is visiting from
                 const currentHost = window.location.hostname;
 
                 if (currentHost === "localhost" || currentHost === "127.0.0.1") {
-                    // Local testing environment: Points to your local FastAPI on port 8000
+                    // Local Dev Environment Link Configuration
                     launchGameLink.href = `http://127.0.0{session.access_token}`;
                 } else {
-                    // Production live environment: Points to your live app on Render
+                    // Production Server Link Configuration
                     launchGameLink.href = `https://onrender.com{session.access_token}`;
                 }
             } else {
@@ -120,6 +120,7 @@
                 launchGameLink.href = "#";
             }
         });
+
 
 
         // Toggle Form between Login and Sign Up Actions
