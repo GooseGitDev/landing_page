@@ -109,7 +109,7 @@
                     launchGameLink.href = `http://127.0.0{session.access_token}`;
                 } else {
                     // Production URL
-                    launchGameLink.href = `https://onrender.com{session.access_token}`;
+                    launchGameLink.href = `https://map-rasterizer.onrender.com?token=${session.access_token}`;
                 }
 
             } else {
