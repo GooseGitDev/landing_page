@@ -101,8 +101,16 @@
                 loggedOutPanel.classList.add('hidden');
                 loggedInPanel.classList.remove('hidden');
                 
-                // Append the secure token state straight to the link destination query array
-                launchGameLink.href = `https://map-rasterizer.onrender.com?token=${session.access_token}`;
+                // Dynamically route the user depending on if we are testing locally or live
+                const currentHost = window.location.hostname;
+
+                if (currentHost === "localhost" || currentHost === "127.0.0.1") {
+                    // Local testing environment: Points to your local FastAPI on port 8000
+                    launchGameLink.href = `http://127.0.0{session.access_token}`;
+                } else {
+                    // Production live environment: Points to your live app on Render
+                    launchGameLink.href = `https://onrender.com{session.access_token}`;
+                }
             } else {
                 // User is completely logged out
                 headerEmail.innerText = "Guest Mode Active";
@@ -112,6 +120,7 @@
                 launchGameLink.href = "#";
             }
         });
+
 
         // Toggle Form between Login and Sign Up Actions
         toggleAuthMode.addEventListener('click', (e) => {
