@@ -105,12 +105,13 @@
                 const currentHost = window.location.hostname;
 
                 if (currentHost === "localhost" || currentHost === "127.0.0.1") {
-                    // Local Dev Environment Link Configuration
+                    // Local Dev URL
                     launchGameLink.href = `http://127.0.0{session.access_token}`;
                 } else {
-                    // Production Server Link Configuration
+                    // Production URL
                     launchGameLink.href = `https://onrender.com{session.access_token}`;
                 }
+
             } else {
                 // User is completely logged out
                 headerEmail.innerText = "Guest Mode Active";
