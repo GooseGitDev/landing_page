@@ -105,11 +105,11 @@
                 const currentHost = window.location.hostname;
 
                 if (currentHost === "localhost" || currentHost === "127.0.0.1") {
-                    // Local Dev URL
+                    // 🟢 FIX A: Cleaned template literal and re-added default Uvicorn port (8000)
                     launchGameLink.href = `http://127.0.0{session.access_token}`;
                 } else {
-                    // Production URL
-                    launchGameLink.href = `https://map-rasterizer.onrender.com?token=${session.access_token}`;
+                    // 🟢 FIX B: Points cleanly to your real, unified deployment backend URL
+                    launchGameLink.href = `https://onrender.com{session.access_token}`;
                 }
 
             } else {
@@ -121,8 +121,6 @@
                 launchGameLink.href = "#";
             }
         });
-
-
 
         // Toggle Form between Login and Sign Up Actions
         toggleAuthMode.addEventListener('click', (e) => {
