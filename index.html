@@ -94,28 +94,58 @@
         const toggleAuthMsg = document.getElementById('toggle-auth-msg');
         const launchGameLink = document.getElementById('launch-game-link');
 
-        // Monitor identity status mutations automatically
+        // // Monitor identity status mutations automatically
+        // supabaseClient.auth.onAuthStateChange((event, session) => {
+        //     if (session) {
+        //         // User is authenticated successfully!
+        //         headerEmail.innerText = session.user.email;
+        //         logoutBtn.classList.remove('hidden');
+        //         loggedOutPanel.classList.add('hidden');
+        //         loggedInPanel.classList.remove('hidden');
+                
+        //         // Track where the user is visiting from
+        //         const currentHost = window.location.hostname;
+
+        //         if (currentHost === "localhost" || currentHost === "127.0.0.1") {
+        //             // 🟢 FIX A: Cleaned template literal and re-added default Uvicorn port (8000)
+        //             launchGameLink.href = `http://127.0.0{session.access_token}`;
+        //         } else {
+        //             // 🟢 FIX B: Points cleanly to your real, unified deployment backend URL
+        //             launchGameLink.href = `https://onrender.com{session.access_token}`;
+        //         }
+
+        //     } else {
+        //         // User is completely logged out
+        //         headerEmail.innerText = "Guest Mode Active";
+        //         logoutBtn.classList.add('hidden');
+        //         loggedOutPanel.classList.remove('hidden');
+        //         loggedInPanel.classList.add('hidden');
+        //         launchGameLink.href = "#";
+        //     }
+        // });
+
+  
         supabaseClient.auth.onAuthStateChange((event, session) => {
             if (session) {
-                // User is authenticated successfully!
+                // User is authenticated
                 headerEmail.innerText = session.user.email;
                 logoutBtn.classList.remove('hidden');
                 loggedOutPanel.classList.add('hidden');
                 loggedInPanel.classList.remove('hidden');
-                
-                // Track where the user is visiting from
+
                 const currentHost = window.location.hostname;
+                const token = session.access_token;
 
                 if (currentHost === "localhost" || currentHost === "127.0.0.1") {
-                    // 🟢 FIX A: Cleaned template literal and re-added default Uvicorn port (8000)
-                    launchGameLink.href = `http://127.0.0{session.access_token}`;
+                    // Local Uvicorn (adjust path/query as needed)
+                    launchGameLink.href = `http://127.0.0.1:8000/?token=${token}`;
+                    // or: `http://127.0.0.1:8000/launch?access_token=${token}`
                 } else {
-                    // 🟢 FIX B: Points cleanly to your real, unified deployment backend URL
-                    launchGameLink.href = `https://onrender.com{session.access_token}`;
+                    // Production – replace with your real Render URL
+                    launchGameLink.href = `https://your-service-name.onrender.com/?token=${token}`;
                 }
-
             } else {
-                // User is completely logged out
+                // Logged out
                 headerEmail.innerText = "Guest Mode Active";
                 logoutBtn.classList.add('hidden');
                 loggedOutPanel.classList.remove('hidden');
@@ -123,6 +153,7 @@
                 launchGameLink.href = "#";
             }
         });
+
 
         // Toggle Form between Login and Sign Up Actions
         toggleAuthMode.addEventListener('click', (e) => {
