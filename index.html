@@ -95,9 +95,38 @@
         const launchGameLink = document.getElementById('launch-game-link');
 
 
+        // supabaseClient.auth.onAuthStateChange((event, session) => {
+        //     if (session) {
+        //         // User is authenticated
+        //         headerEmail.innerText = session.user.email;
+        //         logoutBtn.classList.remove('hidden');
+        //         loggedOutPanel.classList.add('hidden');
+        //         loggedInPanel.classList.remove('hidden');
+
+        //         const currentHost = window.location.hostname;
+        //         const token = session.access_token;
+
+        //         if (currentHost === "localhost" || currentHost === "127.0.0.1") {
+        //             // Local Uvicorn (adjust path/query as needed)
+        //             launchGameLink.href = `http://127.0.0.1:8000/?token=${token}`;
+        //             // or: `http://127.0.0.1:8000/launch?access_token=${token}`
+        //         } else {
+        //             // Production – replace with your real Render URL
+        //             // launchGameLink.href = `https://landing-page-xlpu.onrender.com/?token=${token}`;
+        //             launchGameLink.href = `https://map-rasterizer.onrender.com/?token=${token}`;
+        //         }
+        //     } else {
+        //         // Logged out
+        //         headerEmail.innerText = "Guest Mode Active";
+        //         logoutBtn.classList.add('hidden');
+        //         loggedOutPanel.classList.remove('hidden');
+        //         loggedInPanel.classList.add('hidden');
+        //         launchGameLink.href = "#";
+        //     }
+        // });
+
         supabaseClient.auth.onAuthStateChange((event, session) => {
             if (session) {
-                // User is authenticated
                 headerEmail.innerText = session.user.email;
                 logoutBtn.classList.remove('hidden');
                 loggedOutPanel.classList.add('hidden');
@@ -107,16 +136,13 @@
                 const token = session.access_token;
 
                 if (currentHost === "localhost" || currentHost === "127.0.0.1") {
-                    // Local Uvicorn (adjust path/query as needed)
-                    launchGameLink.href = `http://127.0.0.1:8000/?token=${token}`;
-                    // or: `http://127.0.0.1:8000/launch?access_token=${token}`
+                    // 🟢 Send the token safely via URL Hash Fragment for Local testing
+                    launchGameLink.href = `http://127.0.0{token}`;
                 } else {
-                    // Production – replace with your real Render URL
-                    // launchGameLink.href = `https://landing-page-xlpu.onrender.com/?token=${token}`;
-                    launchGameLink.href = `https://map-rasterizer.onrender.com/?token=${token}`;
+                    // 🟢 Send the token safely via URL Hash Fragment for Live Render
+                    launchGameLink.href = `https://onrender.com{token}`;
                 }
             } else {
-                // Logged out
                 headerEmail.innerText = "Guest Mode Active";
                 logoutBtn.classList.add('hidden');
                 loggedOutPanel.classList.remove('hidden');
