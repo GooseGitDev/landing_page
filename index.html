@@ -216,7 +216,7 @@
     <!-- Official Production CDN Bundle for Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { margin: 0; background: #0099ff; color: #ffffff; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { margin: 0; background: #023d64; color: #ffffff; font-family: 'Segoe UI', system-ui, sans-serif; }
         header { background: #1e1e1e; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; }
         .nav-brand { font-size: 20px; font-weight: bold; color: #00ffcc; }
         .user-badge { font-size: 14px; background: #2a2a2a; padding: 6px 12px; border-radius: 4px; color: #aaa; margin-right: 10px; }
@@ -500,7 +500,7 @@
                     const token = session.access_token;
                     const isLocal = currentHost === "localhost" || currentHost === "127.0.0.1";
                     
-                    const targetBaseUrl = isLocal ? "http://127.0.0.1:8000" : "https://onrender.com";
+                    const targetBaseUrl = isLocal ? "http://127.0.0.1:8000" : "https://map-rasterizer.onrender.com";
                     
                     launchGameLink.href = `${targetBaseUrl}#token=${token}`;
                     launchGameLink.target = "_self";
