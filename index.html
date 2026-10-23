@@ -371,7 +371,8 @@
                 const isLocal = currentHost === "localhost" || currentHost === "127.0.0.1";
                 
                 // FIXED TYPO: Changed 127.0.0.0 to 127.0.0.1:8000 so it hits your actual FastAPI local server shell instance port!
-                const targetBaseUrl = isLocal ? "http://127.0.0.1:8000" : "https://onrender.com";
+                // const targetBaseUrl = isLocal ? "http://127.0.0.1:8000" : "https://onrender.com";
+                const targetBaseUrl = isLocal ? "http://127.0.0.1:8000" : "https://map-rasterizer.onrender.com";
                 
                 // Pass the raw token cleanly inside the URL hash fragment
                 launchGameLink.href = `${targetBaseUrl}#token=${token}`;
