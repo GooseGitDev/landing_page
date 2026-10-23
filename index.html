@@ -216,7 +216,7 @@
     <!-- Official Production CDN Bundle for Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { margin: 0; background: #0b6baa; color: #ffffff; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { margin: 0; background: #0099ff; color: #ffffff; font-family: 'Segoe UI', system-ui, sans-serif; }
         header { background: #1e1e1e; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; }
         .nav-brand { font-size: 20px; font-weight: bold; color: #00ffcc; }
         .user-badge { font-size: 14px; background: #2a2a2a; padding: 6px 12px; border-radius: 4px; color: #aaa; margin-right: 10px; }
@@ -400,6 +400,63 @@
         //     }
         // });
 
+        // // =========================================================================
+        // // 1. MASTER AUTH & ACTION INTERCEPT PANEL 
+        // // =========================================================================
+        // document.addEventListener("DOMContentLoaded", async () => {
+        //     const urlParams = new URLSearchParams(window.location.search);
+            
+        //     if (urlParams.get('action') === 'logout') {
+        //         console.log("🧹 Global Purge Initiated. Dropping cross-app authorization states...");
+                
+        //         // Terminate server side token validation mapping configurations
+        //         await supabaseClient.auth.signOut();
+                
+        //         // Deep cleanse the parent site parameters completely 
+        //         localStorage.clear();
+        //         sessionStorage.clear();
+                
+        //         // Clean out address bar query paths so reloads remain pristine
+        //         window.history.replaceState(null, null, window.location.origin + window.location.pathname);
+                
+        //         // Enforce forced clean layout fallback parameters manually
+        //         headerEmail.innerText = "Guest Mode Active";
+        //         logoutBtn.classList.add('hidden');
+        //         loggedOutPanel.classList.remove('hidden');
+        //         loggedInPanel.classList.add('hidden');
+        //         launchGameLink.href = "#";
+        //         return; // Halt logic bubble execution cleanly here
+        //     }
+
+        //     // =========================================================================
+        //     // 2. SECURE AUTHENTICATION STATE TRACKER
+        //     // =========================================================================
+        //     supabaseClient.auth.onAuthStateChange((event, session) => {
+        //         if (session) {
+        //             headerEmail.innerText = session.user.email;
+        //             logoutBtn.classList.remove('hidden');
+        //             loggedOutPanel.classList.add('hidden');
+        //             loggedInPanel.classList.remove('hidden');
+
+        //             const currentHost = window.location.hostname;
+        //             const token = session.access_token;
+        //             const isLocal = currentHost === "localhost" || currentHost === "127.0.0.1";
+                    
+        //             // Map the exact targets accurately without falling back to blank profiles
+        //             const targetBaseUrl = isLocal ? "http://127.0.0.1:8000" : "https://map-rasterizer.onrender.com";
+                    
+        //             launchGameLink.href = `${targetBaseUrl}#token=${token}`;
+        //             launchGameLink.target = "_self";
+        //         } else {
+        //             headerEmail.innerText = "Guest Mode Active";
+        //             logoutBtn.classList.add('hidden');
+        //             loggedOutPanel.classList.remove('hidden');
+        //             loggedInPanel.classList.add('hidden');
+        //             launchGameLink.href = "#";
+        //         }
+        //     });
+        // });
+
         // =========================================================================
         // 1. MASTER AUTH & ACTION INTERCEPT PANEL 
         // =========================================================================
@@ -425,11 +482,12 @@
                 loggedOutPanel.classList.remove('hidden');
                 loggedInPanel.classList.add('hidden');
                 launchGameLink.href = "#";
-                return; // Halt logic bubble execution cleanly here
+                
+                // REMOVED "return;" HERE so the script continues down to bind your form buttons!
             }
 
             // =========================================================================
-            // 2. SECURE AUTHENTICATION STATE TRACKER
+            // 2. SECURE AUTHENTICATION STATE TRACKER & FORM LISTENERS
             // =========================================================================
             supabaseClient.auth.onAuthStateChange((event, session) => {
                 if (session) {
@@ -442,8 +500,7 @@
                     const token = session.access_token;
                     const isLocal = currentHost === "localhost" || currentHost === "127.0.0.1";
                     
-                    // Map the exact targets accurately without falling back to blank profiles
-                    const targetBaseUrl = isLocal ? "http://127.0.0.1:8000" : "https://map-rasterizer.onrender.com";
+                    const targetBaseUrl = isLocal ? "http://127.0.0.1:8000" : "https://onrender.com";
                     
                     launchGameLink.href = `${targetBaseUrl}#token=${token}`;
                     launchGameLink.target = "_self";
@@ -455,7 +512,11 @@
                     launchGameLink.href = "#";
                 }
             });
+
+            // Make sure your form submit event listener code lives right here so it binds!
         });
+
+
 
 
         // supabaseClient.auth.onAuthStateChange((event, session) => {
