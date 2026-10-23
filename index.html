@@ -165,6 +165,48 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -174,7 +216,7 @@
     <!-- Official Production CDN Bundle for Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { margin: 0; background: #33b327; color: #ffffff; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { margin: 0; background: #4c00fd; color: #ffffff; font-family: 'Segoe UI', system-ui, sans-serif; }
         header { background: #1e1e1e; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; }
         .nav-brand { font-size: 20px; font-weight: bold; color: #00ffcc; }
         .user-badge { font-size: 14px; background: #2a2a2a; padding: 6px 12px; border-radius: 4px; color: #aaa; margin-right: 10px; }
@@ -358,33 +400,91 @@
         //     }
         // });
 
-        supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                headerEmail.innerText = session.user.email;
-                logoutBtn.classList.remove('hidden');
-                loggedOutPanel.classList.add('hidden');
-                loggedInPanel.classList.remove('hidden');
-
-                const currentHost = window.location.hostname;
-                const token = session.access_token;
-
-                const isLocal = currentHost === "localhost" || currentHost === "127.0.0.1";
+        // =========================================================================
+        // 1. MASTER AUTH & ACTION INTERCEPT PANEL 
+        // =========================================================================
+        document.addEventListener("DOMContentLoaded", async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (urlParams.get('action') === 'logout') {
+                console.log("🧹 Global Purge Initiated. Dropping cross-app authorization states...");
                 
-                // FIXED TYPO: Changed 127.0.0.0 to 127.0.0.1:8000 so it hits your actual FastAPI local server shell instance port!
-                // const targetBaseUrl = isLocal ? "http://127.0.0.1:8000" : "https://onrender.com";
-                const targetBaseUrl = isLocal ? "http://127.0.0.1:8000" : "https://map-rasterizer.onrender.com";
+                // Terminate server side token validation mapping configurations
+                await supabaseClient.auth.signOut();
                 
-                // Pass the raw token cleanly inside the URL hash fragment
-                launchGameLink.href = `${targetBaseUrl}#token=${token}`;
-                launchGameLink.target = "_self"; // Maintain solid browser developer panel context
-            } else {
+                // Deep cleanse the parent site parameters completely 
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // Clean out address bar query paths so reloads remain pristine
+                window.history.replaceState(null, null, window.location.origin + window.location.pathname);
+                
+                // Enforce forced clean layout fallback parameters manually
                 headerEmail.innerText = "Guest Mode Active";
                 logoutBtn.classList.add('hidden');
                 loggedOutPanel.classList.remove('hidden');
                 loggedInPanel.classList.add('hidden');
                 launchGameLink.href = "#";
+                return; // Halt logic bubble execution cleanly here
             }
+
+            // =========================================================================
+            // 2. SECURE AUTHENTICATION STATE TRACKER
+            // =========================================================================
+            supabaseClient.auth.onAuthStateChange((event, session) => {
+                if (session) {
+                    headerEmail.innerText = session.user.email;
+                    logoutBtn.classList.remove('hidden');
+                    loggedOutPanel.classList.add('hidden');
+                    loggedInPanel.classList.remove('hidden');
+
+                    const currentHost = window.location.hostname;
+                    const token = session.access_token;
+                    const isLocal = currentHost === "localhost" || currentHost === "127.0.0.1";
+                    
+                    // Map the exact targets accurately without falling back to blank profiles
+                    const targetBaseUrl = isLocal ? "http://127.0.0.1:8000" : "https://onrender.com";
+                    
+                    launchGameLink.href = `${targetBaseUrl}#token=${token}`;
+                    launchGameLink.target = "_self";
+                } else {
+                    headerEmail.innerText = "Guest Mode Active";
+                    logoutBtn.classList.add('hidden');
+                    loggedOutPanel.classList.remove('hidden');
+                    loggedInPanel.classList.add('hidden');
+                    launchGameLink.href = "#";
+                }
+            });
         });
+
+
+        // supabaseClient.auth.onAuthStateChange((event, session) => {
+        //     if (session) {
+        //         headerEmail.innerText = session.user.email;
+        //         logoutBtn.classList.remove('hidden');
+        //         loggedOutPanel.classList.add('hidden');
+        //         loggedInPanel.classList.remove('hidden');
+
+        //         const currentHost = window.location.hostname;
+        //         const token = session.access_token;
+
+        //         const isLocal = currentHost === "localhost" || currentHost === "127.0.0.1";
+                
+        //         // FIXED TYPO: Changed 127.0.0.0 to 127.0.0.1:8000 so it hits your actual FastAPI local server shell instance port!
+        //         // const targetBaseUrl = isLocal ? "http://127.0.0.1:8000" : "https://onrender.com";
+        //         const targetBaseUrl = isLocal ? "http://127.0.0.1:8000" : "https://map-rasterizer.onrender.com";
+                
+        //         // Pass the raw token cleanly inside the URL hash fragment
+        //         launchGameLink.href = `${targetBaseUrl}#token=${token}`;
+        //         launchGameLink.target = "_self"; // Maintain solid browser developer panel context
+        //     } else {
+        //         headerEmail.innerText = "Guest Mode Active";
+        //         logoutBtn.classList.add('hidden');
+        //         loggedOutPanel.classList.remove('hidden');
+        //         loggedInPanel.classList.add('hidden');
+        //         launchGameLink.href = "#";
+        //     }
+        // });
 
 
 
